@@ -41,19 +41,11 @@ PORT=8080
 
 ### 3. Setup Database
 
-Use docker or local database
+Use docker or local database.
 
-### 4. Run Migrations
+Migrations will run automatically when the backend starts - no manual migration step needed!
 
-Execute the migration script to create the database schema:
-
-```bash
-./scripts/migrate.sh
-```
-
-This will apply all migrations in the `migrations/` directory.
-
-### 5. Seed Database (Optional)
+### 4. Seed Database (Optional)
 
 Populate the database with sample data:
 
@@ -61,13 +53,13 @@ Populate the database with sample data:
 go run scripts/seed.go
 ```
 
-### 6. Start the Server
+### 5. Start the Server
 
 ```bash
 go run cmd/server/main.go
 ```
 
-The API server will start at `http://localhost:8080`.
+The API server will start at `http://localhost:8080`. Database migrations will run automatically on startup.
 
 ## Development
 

@@ -64,12 +64,14 @@ For detailed setup instructions for each package, see:
 1. **Start PostgreSQL database**
    Use docker or existing instance
 
-2. **Run database migrations**
+2. **Start the backend server**
 
    ```bash
    cd backend
-   ./scripts/migrate.sh
+   go run cmd/server/main.go
    ```
+
+   Server runs at http://localhost:8080. Migrations will run automatically on startup.
 
 3. **Seed the database** (optional)
 
@@ -78,16 +80,7 @@ For detailed setup instructions for each package, see:
    go run scripts/seed.go
    ```
 
-4. **Start the backend server**
-
-   ```bash
-   cd backend
-   go run cmd/server/main.go
-   ```
-
-   Server runs at http://localhost:8080
-
-5. **Start the frontend dev server**
+4. **Start the frontend dev server**
 
    ```bash
    cd frontend

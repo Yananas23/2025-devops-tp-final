@@ -13,6 +13,11 @@ import (
 )
 
 func main() {
+	// Run database migrations
+	if err := database.RunMigrations(); err != nil {
+		log.Fatal("Failed to run migrations:", err)
+	}
+
 	// Connect to database
 	if err := database.Connect(); err != nil {
 		log.Fatal("Failed to connect to database:", err)
