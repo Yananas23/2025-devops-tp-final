@@ -1,0 +1,19 @@
+FROM golang:1.21-alpine AS builder
+
+WORKDIR /app
+
+COPY go.mod go.sum ./
+
+RUN go mod download
+
+COPY . .
+
+RUN go build -o vote-api
+
+FROM alpine:3.21
+COPY --from=build /app/vote-api /app/vote-api
+
+WORKDIR /app
+
+EXPOSE 8080
+ENTRYPOINT ["./vote-api"]
