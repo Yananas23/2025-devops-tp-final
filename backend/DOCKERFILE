@@ -1,19 +1,21 @@
-FROM golang:1.21-alpine AS builder
+FROM golang:1.23-alpine AS builder
 
 WORKDIR /app
 
-COPY go.mod go.sum ./
+# installer gcc si package nécessitent cgo (rare)
+# RUN apk add --no-cache build-base
 
+COPY go.mod go.sum ./
 RUN go mod download
 
 COPY . .
 
-RUN go build -o vote-api
+# Binaire statique compatible scratch
+RUN CGO_ENABLED=0 GOOS=linux go build -o liste ./cmd/server
 
-FROM alpine:3.21
-COPY --from=build /app/vote-api /app/vote-api
-
+FROM scratch
 WORKDIR /app
+COPY --from=builder /app/liste .
 
 EXPOSE 8080
-ENTRYPOINT ["./vote-api"]
+ENTRYPOINT ["./liste"]
