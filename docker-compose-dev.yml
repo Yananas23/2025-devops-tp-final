@@ -1,0 +1,60 @@
+version: '3.9'
+
+services:
+
+  db:
+    image: postgres:16
+    container_name: giftlist_db_test
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: christmas_gifts
+    volumes:
+      - pgdata_test:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    networks:
+      - test-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d christmas_gifts"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    image: yananas23/giftlist-backend:latest
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: giftlist_backend_test
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - ./backend/.env
+    ports:
+      - "8080:8080"
+    networks:
+      - test-network
+
+  frontend:
+    image: yananas23/giftlist-frontend:latest
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: giftlist_frontend_test
+    depends_on:
+      - backend
+    ports:
+      - "5173:80"
+    networks:
+      - test-network
+    restart: unless-stopped
+
+networks:
+  test-network:
+    driver: bridge
+
+volumes:
+  pgdata_test:

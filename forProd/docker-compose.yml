@@ -1,0 +1,36 @@
+version: '3.9'
+
+services:
+
+  backend:
+    image: yananas23/giftlist-backend:latest
+    container_name: giftlist_backend
+    env_file:
+      - ./backend.env
+    networks:
+      - gift-network
+
+  frontend:
+    image: yananas23/giftlist-frontend:latest
+    container_name: giftlist_frontend
+    networks:
+      - gift-network
+
+  nginx:
+    image: nginx:latest
+    container_name: giftlist_nginx
+    ports:
+      - "1170:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - /etc/letsencrypt:/etc/letsencrypt
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - gift-network
+
+networks:
+  gift-network:
+    driver: bridge
