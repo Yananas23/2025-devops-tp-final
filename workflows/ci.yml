@@ -1,0 +1,115 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: ["*"]
+  pull_request:
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # -------------------------
+      # Backend Go
+      # -------------------------
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+
+      - name: Cache Go modules
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('backend/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Install backend deps
+        run: go mod download
+        working-directory: backend
+
+      - name: Run backend tests
+        run: go test ./...
+        working-directory: backend
+
+      - name: Build backend
+        run: go build -o app
+        working-directory: backend
+
+      # -------------------------
+      # Frontend Vite
+      # -------------------------
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Cache node_modules
+        uses: actions/cache@v3
+        with:
+          path: frontend/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('frontend/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install frontend deps
+        run: npm install
+        working-directory: frontend
+
+      - name: Build frontend
+        run: npm run build
+        working-directory: frontend
+
+      # -------------------------
+      # Docker build (CI)
+      # -------------------------
+      - name: Build backend Docker image
+        run: docker build -t backend-app -f backend/Dockerfile backend
+
+      - name: Build frontend Docker image
+        run: docker build -t frontend-app -f frontend/Dockerfile frontend
+
+      # -------------------------
+      # CD — main branch only
+      # -------------------------
+      - name: Login to Docker Hub
+        if: github.ref == 'refs/heads/main'
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Push backend image
+        if: github.ref == 'refs/heads/main'
+        run: |
+          docker tag backend-app ${{ secrets.DOCKERHUB_USERNAME }}/backend-app:main
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/backend-app:main
+
+      - name: Push frontend image
+        if: github.ref == 'refs/heads/main'
+        run: |
+          docker tag frontend-app ${{ secrets.DOCKERHUB_USERNAME }}/frontend-app:main
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/frontend-app:main
+
+      # -------------------------
+      # Deploy on OVH — via SSH
+      # -------------------------
+      - name: Deploy on OVH (docker-compose pull + up)
+        if: github.ref == 'refs/heads/main'
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.OVH_SSH_HOST }}
+          username: ${{ secrets.OVH_SSH_USER }}
+          key: ${{ secrets.OVH_SSH_KEY }}
+          script: |
+            cd /path/to/your/docker-compose
+            docker compose pull
+            docker compose up -d
+            docker system prune -f

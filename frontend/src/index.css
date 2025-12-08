@@ -85,6 +85,6 @@ body {
   user-select: none;
   cursor: default;
   animation: fall linear infinite;
-  color: white;
+  color: rgb(0, 0, 0);
   opacity: 0.8;
 }
