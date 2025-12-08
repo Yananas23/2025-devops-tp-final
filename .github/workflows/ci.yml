@@ -63,10 +63,10 @@ jobs:
       # Docker build (CI)
       # -------------------------
       - name: Build backend Docker image
-        run: docker build -f backend/DOCKERFILE -t giftlist-backend .
+        run: docker build -f backend/DOCKERFILE -t giftlist-backend backend
 
       - name: Build frontend Docker image
-        run: docker build -f frontend/DOCKERFILE -t giftlist-frontend .
+        run: docker build -f frontend/DOCKERFILE -t giftlist-frontend frontend
 
       # -------------------------
       # CD — main branch only
