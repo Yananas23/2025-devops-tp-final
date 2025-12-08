@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          path: repo
 
       # -------------------------
       # Backend Go
@@ -71,10 +73,10 @@ jobs:
       # Docker build (CI)
       # -------------------------
       - name: Build backend Docker image
-        run: docker build -t backend-app -f ../backend/Dockerfile backend
+        run: docker build -t backend-app -f backend/Dockerfile backend
 
       - name: Build frontend Docker image
-        run: docker build -t frontend-app -f ../frontend/Dockerfile frontend
+        run: docker build -t frontend-app -f frontend/Dockerfile frontend
 
       # -------------------------
       # CD — main branch only
