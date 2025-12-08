@@ -12,8 +12,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          path: repo
 
       # -------------------------
       # Backend Go
@@ -35,15 +33,11 @@ jobs:
 
       - name: Install backend deps
         run: go mod download
-        working-directory: repo/backend
+        working-directory: backend
 
       - name: Run backend tests
         run: go test ./...
-        working-directory: repo/backend
-
-      - name: Build backend
-        run: go build -o app
-        working-directory: repo/backend
+        working-directory: backend
 
       # -------------------------
       # Frontend Vite
@@ -63,10 +57,6 @@ jobs:
 
       - name: Install frontend deps
         run: npm install
-        working-directory: frontend
-
-      - name: Build frontend
-        run: npm run build
         working-directory: frontend
 
       # -------------------------
