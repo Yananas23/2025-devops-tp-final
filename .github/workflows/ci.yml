@@ -35,15 +35,15 @@ jobs:
 
       - name: Install backend deps
         run: go mod download
-        working-directory: backend
+        working-directory: repo/backend
 
       - name: Run backend tests
         run: go test ./...
-        working-directory: backend
+        working-directory: repo/backend
 
       - name: Build backend
         run: go build -o app
-        working-directory: backend
+        working-directory: repo/backend
 
       # -------------------------
       # Frontend Vite
