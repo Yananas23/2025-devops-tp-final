@@ -63,10 +63,10 @@ jobs:
       # Docker build (CI)
       # -------------------------
       - name: Build backend Docker image
-        run: docker build -t backend-app -f backend/Dockerfile backend
+        run: docker build -f backend/Dockerfile backend
 
       - name: Build frontend Docker image
-        run: docker build -t frontend-app -f frontend/Dockerfile frontend
+        run: docker build -f frontend/Dockerfile frontend
 
       # -------------------------
       # CD — main branch only
@@ -81,14 +81,14 @@ jobs:
       - name: Push backend image
         if: github.ref == 'refs/heads/main'
         run: |
-          docker tag backend-app ${{ secrets.DOCKERHUB_USERNAME }}/backend-app:main
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/backend-app:main
+          docker tag backend-app ${{ secrets.DOCKERHUB_USERNAME }}/giftlist-backend:latest
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/giftlist-backend:latest
 
       - name: Push frontend image
         if: github.ref == 'refs/heads/main'
         run: |
-          docker tag frontend-app ${{ secrets.DOCKERHUB_USERNAME }}/frontend-app:main
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/frontend-app:main
+          docker tag frontend-app ${{ secrets.DOCKERHUB_USERNAME }}/giftlist-frontend:latest
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/giftlist-frontend:latest
 
       # -------------------------
       # Deploy on OVH — via SSH
