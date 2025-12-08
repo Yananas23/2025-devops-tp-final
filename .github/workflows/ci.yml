@@ -62,6 +62,10 @@ jobs:
       # -------------------------
       # Docker build (CI)
       # -------------------------
+
+      - name: Debug backend folder
+        run: ls -R backend
+
       - name: Build backend Docker image
         run: docker build -f backend/Dockerfile -t giftlist-backend .
 
