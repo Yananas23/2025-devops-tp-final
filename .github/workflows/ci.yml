@@ -81,13 +81,13 @@ jobs:
       - name: Push backend image
         if: github.ref == 'refs/heads/main'
         run: |
-          docker tag backend-app ${{ secrets.DOCKERHUB_USERNAME }}/giftlist-backend:latest
+          docker tag giftlist-backend ${{ secrets.DOCKERHUB_USERNAME }}/giftlist-backend:latest
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/giftlist-backend:latest
 
       - name: Push frontend image
         if: github.ref == 'refs/heads/main'
         run: |
-          docker tag frontend-app ${{ secrets.DOCKERHUB_USERNAME }}/giftlist-frontend:latest
+          docker tag giftlist-frontend ${{ secrets.DOCKERHUB_USERNAME }}/giftlist-frontend:latest
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/giftlist-frontend:latest
 
       # -------------------------
