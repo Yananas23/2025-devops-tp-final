@@ -98,11 +98,14 @@ jobs:
         working-directory: ./frontend
         run: npm run build-storybook
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Deploy to OVH server
+        uses: appleboy/ssh-action@v1.0.3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./frontend/storybook-static
+          host: ${{ secrets.OVH_SSH_HOST }}
+          username: ${{ secrets.OVH_SSH_USER }}
+          key: ${{ secrets.OVH_SSH_KEY }}
+          source: "frontend/storybook-static/*"
+          target: "/var/www/storybook"
 
       # -------------------------
       # Deploy on OVH — via SSH
