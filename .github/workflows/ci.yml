@@ -101,7 +101,7 @@ jobs:
           username: ${{ secrets.OVH_SSH_USER }}
           key: ${{ secrets.OVH_SSH_KEY }}
           script: |
-            cd /path/to/your/docker-compose
+            cd var/www/giftlist/docker-compose.yml
             docker compose pull
             docker compose up -d
             docker system prune -f
