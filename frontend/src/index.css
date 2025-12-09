@@ -23,7 +23,7 @@ body {
 }
 
 .christmas-card {
-  background-color: rgb(255 255 255);
+  background-color: rgb(255 255 255 / 0.1);
   backdrop-filter: blur(12px);
   border: 1px solid rgb(255 215 0 / 0.3);
   border-radius: 0.5rem;
