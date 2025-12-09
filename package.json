@@ -1,0 +1,4 @@
+"scripts": {
+  "storybook": "storybook dev",
+  "build-storybook": "storybook build"
+}
