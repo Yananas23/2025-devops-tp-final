@@ -98,11 +98,12 @@ jobs:
         working-directory: ./frontend
         run: npm run build-storybook
 
-      - name: Deploy to OVH server
-        uses: appleboy/ssh-action@v1.0.3
+      - name: Deploy on OVH (Storybook)
+        uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.OVH_SSH_HOST }}
           username: ${{ secrets.OVH_SSH_USER }}
+          port: 22
           key: ${{ secrets.OVH_SSH_KEY }}
           source: "frontend/storybook-static/*"
           target: "/var/www/storybook"
