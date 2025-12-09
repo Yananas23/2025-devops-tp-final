@@ -2,8 +2,8 @@ name: Automatic Release
 
 on:
   push:
-    tags:
-      - 'V[0-9]*'
+    branches:
+      - main
 
 jobs:
   release:
@@ -11,16 +11,21 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
 
-      - name: Ensure tag is from main
+      - name: Extract version from commit title
+        id: version
         run: |
-          git fetch origin main
-          git merge-base --is-ancestor $GITHUB_SHA origin/main
+          VERSION=$(echo "${{ github.event.head_commit.message }}" | head -n 1)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Ensure commit is a release
+        run: |
+          [[ "${{ steps.version.outputs.version }}" =~ ^V[0-9]+(\.[0-9]+)*$ ]]
 
       - name: Create GitHub Release
         uses: ncipollo/release-action@v1
         with:
-          tag: ${{ github.ref_name }}
-          name: Release ${{ github.ref_name }}
+          tag: ${{ steps.version.outputs.version }}
+          name: Release ${{ steps.version.outputs.version }}
+          draft: false
+          prerelease: false
