@@ -63,6 +63,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
+      - name: Install playwright
+        run: npx playwright install
+        working-directory: frontend 
+
       - name: Install frontend deps
         run: npm install
         working-directory: frontend
