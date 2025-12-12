@@ -80,7 +80,7 @@ Exemples :
 
 ## 📘 Storybook
 
-- Génération automatique d’un **Storybook**
+- Génération automatique d’un **Storybook** accessible [ici](http://51.210.254.14/).
 - Sert à :
   - documenter les composants UI
   - visualiser les états des composants
